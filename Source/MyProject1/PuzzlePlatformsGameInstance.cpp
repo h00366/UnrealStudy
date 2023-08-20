@@ -16,6 +16,7 @@
 #include "MenuWidget.h"
 
 const static FName SESSION_NAME = TEXT("My Session Gmae"); 
+const static FName SERVER_NAME_SETTING_KEY  = TEXT("ServerName"); 
 
 UPuzzlePlatformsGameInstance::UPuzzlePlatformsGameInstance(const FObjectInitializer& FObjectInitializer)
 {
@@ -45,8 +46,7 @@ void UPuzzlePlatformsGameInstance::Init()
 				SessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UPuzzlePlatformsGameInstance::OnCreateSessionComplete);
 				SessionInterface->OnDestroySessionCompleteDelegates.AddUObject(this, &UPuzzlePlatformsGameInstance::OnCreateSessionComplete);
 				SessionInterface->OnFindSessionsCompleteDelegates.AddUObject(this, &UPuzzlePlatformsGameInstance::OnFindSessionsComplete);
-				SessionInterface->OnJoinSessionCompleteDelegates.AddUObject(this, &UPuzzlePlatformsGameInstance::FOnJoinSessionComplete);
-
+				SessionInterface->OnJoinSessionCompleteDelegates.AddUObject(this, &UPuzzlePlatformsGameInstance::OnJoinSessionComplete);
 			}
 		}
 		else 
@@ -69,6 +69,13 @@ void UPuzzlePlatformsGameInstance::Join(uint32 Index)
 
 	SessionInterface->JoinSession(0, SESSION_NAME, SessionSearch->SearchResults[Index]);
 }
+void UPuzzlePlatformsGameInstance::StartSession()
+{
+	if(SessionInterface.IsValid())
+	{
+		SessionInterface->StartSession(SESSION_NAME);
+	}
+}
 void UPuzzlePlatformsGameInstance::LoadMainMenu()
 {
 	APlayerController* PlayerController = GetFirstLocalPlayerController();
@@ -83,9 +90,9 @@ void UPuzzlePlatformsGameInstance::RefreshServerList()
 	SessionSearch = MakeShareable(new FOnlineSessionSearch());
 	if (SessionSearch.IsValid())
 	{
-		//					SessionSearch->QuerySettings.Get
+//		SessionSearch->QuerySettings.Get
 		SessionSearch->MaxSearchResults = 100;
-		SessionSearch->QuerySettings.Set( SEARCH_PRESENCE, true,EOnlineComparisonOp::Equals);
+		SessionSearch->QuerySettings.Set(SEARCH_PRESENCE, true,EOnlineComparisonOp::Equals);
 		SessionSearch->bIsLanQuery = true;
 		UE_LOG(LogTemp, Warning, TEXT("Starting FIne Session"));
 		SessionInterface->FindSessions(0, SessionSearch.ToSharedRef());
@@ -93,15 +100,16 @@ void UPuzzlePlatformsGameInstance::RefreshServerList()
 	}
 }
 
-void UPuzzlePlatformsGameInstance::Host()						// PlayerControllers, GameMode, Manager, Instances ����� ������
+void UPuzzlePlatformsGameInstance::Host(FString ServerName)						// PlayerControllers, GameMode, Manager, Instances ����� ������
 {
+	DesiredServerName = ServerName;
 	if (SessionInterface.IsValid())
 	{
 		auto ExistingSession =  SessionInterface->GetNamedSession(SESSION_NAME);
 		if (ExistingSession != nullptr)
 		{
 
-			SessionInterface->DestroySession(SESSION_NAME);
+			SessionInterface->DestroySession(SESSION_NAME);  
 		}
 		else
 		{
@@ -130,11 +138,11 @@ void UPuzzlePlatformsGameInstance::OnCreateSessionComplete(FName SessionName, bo
 	UWorld* World = GetWorld();
 	if (!ensure(World != nullptr)) return;
 
-	World->ServerTravel("/Game/Map/ThirdPersonExampleMaps?listen");
+	World->ServerTravel("/Game/Map/Lobby?listen");
 }
 
 void UPuzzlePlatformsGameInstance::OnDestroySessionComplete(FName SessionName, bool succesess)
-{
+{	
 	if (succesess)
 	{
 		CreateSession();
@@ -147,12 +155,29 @@ void UPuzzlePlatformsGameInstance::OnFindSessionsComplete(bool succesess)
 	{
 		
 		UE_LOG(LogTemp, Warning, TEXT("Finished Fine Session"));
-		TArray<FString> Servernames;
+		TArray<FServerData> Servernames;
 
 		for (const FOnlineSessionSearchResult& SearchResult : SessionSearch->SearchResults)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Session name %s"), *SearchResult.GetSessionIdStr());
-			Servernames.Add(SearchResult.GetSessionIdStr());
+
+			FServerData Data;
+			Data.MaxPlayer = SearchResult.Session.SessionSettings.NumPublicConnections;
+
+//			Data.CurrentPlayers = Data.MaxPlayer - SearchResult.Session.NumPublicConnections;
+			Data.CurrentPlayers = Data.MaxPlayer - SearchResult.Session.NumOpenPublicConnections;
+			Data.HostUsername = SearchResult.Session.OwningUserName;
+			FString ServerName;
+			if (SearchResult.Session.SessionSettings.Get(SERVER_NAME_SETTING_KEY, ServerName))
+			{
+				Data.Name = ServerName;
+			}
+			else
+			{
+				Data.Name = "Nothing";
+				UE_LOG(LogTemp, Warning, TEXT("Colud not fine ServerName"));
+			}
+			Servernames.Add(Data);
 		}
 		Menu->SetServerList(Servernames);
 
@@ -163,14 +188,22 @@ void UPuzzlePlatformsGameInstance::CreateSession()
 {
 	if (SessionInterface.IsValid())
 	{
+		FOnlineSessionSettings SessionSettings;
+		if (IOnlineSubsystem::Get()->GetSubsystemName() == "NULL")
+		{
+			SessionSettings.bIsLANMatch = true;
+		}
+		else
+		{
+			SessionSettings.bIsLANMatch = false;
 
-	FOnlineSessionSettings SessionSettings;
-	SessionSettings.bIsLANMatch = false;
-	SessionSettings.NumPublicConnections = 2;
-	SessionSettings.bShouldAdvertise = true;
-	SessionSettings.bUsesPresence = true;
+		}
+		SessionSettings.NumPublicConnections = 5; 
+		SessionSettings.bShouldAdvertise = true;
+		SessionSettings.bUsesPresence = true;
+		SessionSettings.Set(SERVER_NAME_SETTING_KEY, DesiredServerName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 
-	SessionInterface->CreateSession(0, SESSION_NAME, SessionSettings);
+		SessionInterface->CreateSession(0, SESSION_NAME, SessionSettings);
 	}
 
 }
@@ -207,23 +240,24 @@ void UPuzzlePlatformsGameInstance::InGameLoadMenu()
 }
 
 
-void UPuzzlePlatformsGameInstance::FOnJoinSessionComplete(FName sessionName, EOnJoinSessionCompleteResult::Type Result)
+void UPuzzlePlatformsGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
 {
+
 	if (!SessionInterface.IsValid()) return;
 
-	FString Address; 
-	if(SessionInterface->GetResolvedConnectString(sessionName, Address))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Could not Get connect string"));
+	FString Address;
+	if (!SessionInterface->GetResolvedConnectString(SessionName, Address)) {
+		UE_LOG(LogTemp, Warning, TEXT("Could not get connect string."));
 		return;
 	}
 
 	UEngine* Engine = GetEngine();
 	if (!ensure(Engine != nullptr)) return;
 
-	Engine->AddOnScreenDebugMessage(0, 2, FColor::Green, FString::Printf(TEXT("Joining %s"), *Address));
+	Engine->AddOnScreenDebugMessage(0, 5, FColor::Green, FString::Printf(TEXT("Joining %s"), *Address));
 
 	APlayerController* PlayerController = GetFirstLocalPlayerController();
 	if (!ensure(PlayerController != nullptr)) return;
+
 	PlayerController->ClientTravel(Address, ETravelType::TRAVEL_Absolute);
-	}
+}

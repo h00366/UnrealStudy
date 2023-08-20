@@ -8,6 +8,18 @@
 
 
 
+USTRUCT()
+struct FServerData
+{
+	GENERATED_BODY()
+
+	FString Name;
+	uint16 CurrentPlayers;
+	uint16 MaxPlayer;
+	FString HostUsername; 
+
+};
+
 /**
  * 
  */
@@ -19,7 +31,7 @@ class MYPROJECT1_API UMainManu : public UMenuWidget
 public:
 	 UMainManu(const FObjectInitializer& FObjectInitializer);
 
-	 void SetServerList(TArray<FString> servername);
+	 void SetServerList(TArray<FServerData> servername);
 
 	 void SelectIndex(uint32 Index);	  
 
@@ -34,10 +46,19 @@ private:
 		class UButton* HostButton;
 
 	UPROPERTY(meta = (BindWidget))
+		class UButton* ConfirmHostButton;
+
+	UPROPERTY(meta = (BindWidget))
+		class UButton* CancelHostButton;
+
+	UPROPERTY(meta = (BindWidget))
 		class UButton* JoinButton;
 
 	UPROPERTY(meta = (BindWidget))
 		class UWidgetSwitcher* ManuSwitcher;
+
+	UPROPERTY(meta = (BindWidget))
+		class UEditableTextBox* ServerHostName;
 
 	UPROPERTY(meta = (BindWidget))
 		class UPanelWidget* ServerList;
@@ -53,11 +74,20 @@ private:
 	UFUNCTION()
 		void JoinServer();
 	UFUNCTION()
+		void OpenHoseMenu();
+	UFUNCTION()
 		void OpenJoinServer();
+	UFUNCTION()
+		void OpenMainMenu();
 
 	UPROPERTY(meta = (BindWidget))
 		class UWidget* JoinManu;
 
+	UPROPERTY(meta = (BindWidget))
+		class UWidget* HostMenu;
+
 	TOptional<uint32> selectedIndex;
+	void UpdateChildren();
 	
 };  
+ 
