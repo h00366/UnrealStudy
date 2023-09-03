@@ -51,8 +51,10 @@ void APlayerKart::Tick(float DeltaTime)
 	ENetRole Roles = GetLocalRole();
 	if(Roles == ROLE_Authority)
 		DrawDebugString(GetWorld(), FVector(0, 0, 200),TEXT("Host") , this, FColor::White, DeltaTime);
-	else
+	else if (Roles == ROLE_AutonomousProxy)
 		DrawDebugString(GetWorld(), FVector(0, 0, 200), TEXT("Client"), this, FColor::White, DeltaTime);
+	else
+		DrawDebugString(GetWorld(), FVector(0, 0, 200), TEXT("Host"), this, FColor::White, DeltaTime);
 }
 
 void APlayerKart::SetUp()

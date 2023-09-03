@@ -15,6 +15,7 @@ class MYPROJECT1_API ALobbyGameMode : public AMyProject1GameMode
 	GENERATED_BODY()
 
 public:
+
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 
 	virtual void Logout(AController* Exiting) override;

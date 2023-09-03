@@ -34,5 +34,5 @@ void ALobbyGameMode::StartGame()
 
 	UWorld* World = GetWorld();
 	bUseSeamlessTravel = true;
-	World->ServerTravel("/Game/Map/KartMap?listen");
+	World->ServerTravel("/Game/Map/Lobby?listen");
 }
