@@ -5,6 +5,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
+#include "DrawDebugHelpers.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -16,6 +17,7 @@ AMyProject1Character::AMyProject1Character()
 {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
+
 
 	// set our turn rates for input
 	BaseTurnRate = 45.f;
@@ -52,17 +54,25 @@ AMyProject1Character::AMyProject1Character()
 
 void AMyProject1Character::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
+	if (HasAuthority())
+	{
+		NetUpdateFrequency = 60;
+	}
+	//	MovementComponent->AbortInsideMemberFunction();
 	// Set up gameplay key bindings
 	check(PlayerInputComponent);
+
+	
+
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
-
 	PlayerInputComponent->BindAxis("MoveForward", this, &AMyProject1Character::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AMyProject1Character::MoveRight);
 
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
 	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick
+
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("TurnRate", this, &AMyProject1Character::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
@@ -75,6 +85,7 @@ void AMyProject1Character::SetupPlayerInputComponent(class UInputComponent* Play
 	// VR headset functionality
 	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &AMyProject1Character::OnResetVR);
 }
+
 
 
 void AMyProject1Character::OnResetVR()
@@ -137,4 +148,13 @@ void AMyProject1Character::MoveRight(float Value)
 		// add movement in that direction
 		AddMovementInput(Direction, Value);
 	}
+}
+
+
+
+void AMyProject1Character::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	ENetRole Roles = GetLocalRole();
 }

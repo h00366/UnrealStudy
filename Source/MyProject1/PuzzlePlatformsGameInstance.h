@@ -49,6 +49,7 @@ private:
 	void OnDestroySessionComplete(FName SessionName, bool succesess);
 	void OnFindSessionsComplete(bool succesess);
 	void OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result);
+	void OnNetworkFailure(UWorld* World, UNetDriver* NetDriver, ENetworkFailure::Type FailureType, const FString& ErrorString);
 
 
 	FString DesiredServerName;

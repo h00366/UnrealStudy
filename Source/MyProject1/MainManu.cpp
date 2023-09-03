@@ -36,69 +36,9 @@ bool UMainManu::Initialize()
 
 	ConfirmQeitButton->OnClicked.AddDynamic(this, &UMainManu::OpenMainMenu);
 
+
+	Reset->OnClicked.AddDynamic(this, &UMainManu::OpenJoinServer);
 	return true;
-}
-
-void UMainManu::SetServerList(TArray<FServerData> servername)
-{	
-
-	UWorld* world = this->GetWorld();
-
-	ServerList->ClearChildren();
-
-	uint32 i = 0;
-	UE_LOG(LogTemp, Warning, TEXT("SetServerList test1"));
-
-	for (const FServerData& ServerData : servername)
-	{
-		UServerRow* Row = CreateWidget<UServerRow>(world, ServerRowClass);
-
-
-		Row->ServerName->SetText(FText::FromString(ServerData.Name));
-		Row->HostUser->SetText(FText::FromString(ServerData.HostUsername));
-		FString FractionText = FString::Printf(TEXT("%d/%d"),ServerData.CurrentPlayers, ServerData.MaxPlayer);
-		Row->ConnectionFraction->SetText(FText::FromString(FractionText));
-		Row->SetUp(this,i);
-		++i;
-
-
- 		ServerList->AddChild(Row);
-		UE_LOG(LogTemp, Warning, TEXT("SetServerList test2"));
-
-	}
-}
-
-
-
-void UMainManu::OpenJoinServer()
-{
-	ManuSwitcher->SetActiveWidget(JoinManu);
-
-	if (MainMenuInterface != nullptr)
-	{
-		MainMenuInterface->RefreshServerList();
-	}
-}
-
-void UMainManu::OpenMainMenu()
-{
-	ManuSwitcher->SetActiveWidget(JoinManu);
-	if (MainMenuInterface != nullptr) {
-		MainMenuInterface->RefreshServerList();
-	}
-}
-
-void UMainManu::UpdateChildren()
-{
-	for (int32 i = 0; i < ServerList->GetChildrenCount(); ++i)
-	{
-		auto Row =  Cast<UServerRow>(ServerList->GetChildAt(i));
-		if (Row != nullptr)
-		{
-			Row->Selected = (selectedIndex.IsSet() && selectedIndex.GetValue() == i);
-		}
-
-	 }
 }
 
 void UMainManu::HostServer()
@@ -108,26 +48,88 @@ void UMainManu::HostServer()
 		FString ServerName = ServerHostName->Text.ToString();
 		MainMenuInterface->Host(ServerName);
 	}
-
 }
+
 void UMainManu::SelectIndex(uint32 Index)
 {
 	selectedIndex = Index;
 	UpdateChildren();
 }
 
+void UMainManu::UpdateChildren()
+{
+	for (int32 i = 0; i < ServerList->GetChildrenCount(); ++i)
+	{
+		auto Row = Cast<UServerRow>(ServerList->GetChildAt(i));
+		if (Row != nullptr)
+		{
+			Row->Selected = (selectedIndex.IsSet() && selectedIndex.GetValue() == i);
+		}
+	}
+}
 void UMainManu::JoinServer()
 {
-	if (selectedIndex.IsSet()&& MainMenuInterface != nullptr)
+	if (selectedIndex.IsSet() && MainMenuInterface != nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Selected index %d"), selectedIndex.GetValue());
 		MainMenuInterface->Join(selectedIndex.GetValue());
 	}
 	else
 	{
-			UE_LOG(LogTemp, Warning, TEXT("Selected index Not Set")); 
+		UE_LOG(LogTemp, Warning, TEXT("Selected index Not Set"));
 	}
 }
+
+void UMainManu::ResetServer()
+{
+	ManuSwitcher->SetActiveWidget(JoinManu);
+
+	if (MainMenuInterface != nullptr)
+		MainMenuInterface->RefreshServerList();
+}
+
+void UMainManu::OpenJoinServer()
+{
+	ManuSwitcher->SetActiveWidget(JoinManu);
+
+	if (MainMenuInterface != nullptr)
+		MainMenuInterface->RefreshServerList();
+}
+
+void UMainManu::SetServerList(TArray<FServerData> servername)
+{
+
+	UWorld* World = this->GetWorld();
+	if (!ensure(World != nullptr)) return;
+
+	ServerList->ClearChildren();
+
+	uint32 i = 0;
+	for (const FServerData& ServerData : servername)
+	{
+		UServerRow* Row = CreateWidget<UServerRow>(World, ServerRowClass);
+		if (!ensure(Row != nullptr)) return;
+
+		Row->ServerName->SetText(FText::FromString(ServerData.Name));
+		Row->HostUser->SetText(FText::FromString(ServerData.HostUsername));
+		FString FractionText = FString::Printf(TEXT("%d/%d"), ServerData.CurrentPlayers, ServerData.MaxPlayer);
+		Row->ConnectionFraction->SetText(FText::FromString(FractionText));
+		Row->SetUp(this, i);
+		++i;
+
+		ServerList->AddChild(Row);
+	}
+}
+
+
+void UMainManu::OpenMainMenu()
+{
+	ManuSwitcher->SetActiveWidget(ManuSwitcher);
+	if (MainMenuInterface != nullptr) {
+		MainMenuInterface->RefreshServerList();
+	}
+}
+
 
 void UMainManu::OpenHoseMenu()
 {

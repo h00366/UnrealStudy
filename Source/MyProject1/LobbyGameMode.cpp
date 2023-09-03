@@ -12,7 +12,7 @@ void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
 	++NumberOfPlayer;
 	if (NumberOfPlayer >= 2)
 	{
-  		GetWorldTimerManager().SetTimer(GameStartTimer,this, &ALobbyGameMode::StartGame,20);
+  		GetWorldTimerManager().SetTimer(GameStartTimer,this, &ALobbyGameMode::StartGame,5);
 		UE_LOG(LogTemp,Warning ,TEXT("NumberOfPlayer = 3"));
 
 	}
@@ -34,6 +34,5 @@ void ALobbyGameMode::StartGame()
 
 	UWorld* World = GetWorld();
 	bUseSeamlessTravel = true;
-	 
-	World->ServerTravel("/Game/Map/ThirdPersonExampleMaps?listen");
+	World->ServerTravel("/Game/Map/KartMap?listen");
 }

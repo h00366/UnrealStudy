@@ -55,6 +55,9 @@ private:
 		class UButton* JoinButton;
 
 	UPROPERTY(meta = (BindWidget))
+		class UButton* Reset;
+
+	UPROPERTY(meta = (BindWidget))
 		class UWidgetSwitcher* ManuSwitcher;
 
 	UPROPERTY(meta = (BindWidget))
@@ -69,6 +72,10 @@ private:
 	UPROPERTY(meta = (BindWidget))
 		class UButton* ConfirmQeitButton;
 
+
+
+	UFUNCTION()
+		void ResetServer();
 	UFUNCTION()
 		void HostServer();
 	UFUNCTION()
@@ -85,6 +92,9 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 		class UWidget* HostMenu;
+
+	UPROPERTY(meta = (BindWidget))
+		class UWidget* MainManu;
 
 	TOptional<uint32> selectedIndex;
 	void UpdateChildren();
