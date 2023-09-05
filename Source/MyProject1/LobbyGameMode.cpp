@@ -10,6 +10,7 @@ ALobbyGameMode::ALobbyGameMode()
 //	PostLogin(0);
 
 }
+
 void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	UE_LOG(LogTemp, Warning, TEXT("NumberOfPlayerTest"));

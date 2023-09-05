@@ -26,21 +26,31 @@ APlayerKart::APlayerKart()
 void APlayerKart::BeginPlay()
 {
 	Super::BeginPlay();
-
 	if (HasAuthority())
 	{
 		NetUpdateFrequency = 1;
 	}
+
+	// 게임 인스턴스 가져오기
 	UPuzzlePlatformsGameInstance* GameInstance = Cast<UPuzzlePlatformsGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+
 	if (GameInstance)
 	{
-		int32 PlayerIndex = GameInstance->PlayerIndex-1;
-		// 나머지 코드 실행
-		SetUp(0);
+		// 플레이어 인덱스 가져오기
+		int32 PlayerIndex = GameInstance->PlayerIndex - 1;
+
+		// 호스트로 인식된 플레이어에게 Pawn을 제어할 수 있도록 코드 추가
+		if (HasAuthority() && PlayerIndex == 0)
+		{
+			SetUp(PlayerIndex);
+		}
+
 		UE_LOG(LogTemp, Warning, TEXT("%d"), 0);
 	}
 	else
+	{
 		UE_LOG(LogTemp, Warning, TEXT("ErrorError"));
+	}
 }	
 
 FString GetEnumText(ENetRole Role)
@@ -76,17 +86,19 @@ void APlayerKart::Tick(float DeltaTime)
 void APlayerKart::SetUp(int32 PlayerIndex)
 {
 	UWorld* World = GetWorld();
-//	if (World)
-//	{	
-//		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(World, PlayerIndex);
-//		if (PlayerController)
-//		{
-//			// 입력 모드를 재설정하여 게임과 UI 입력을 허용합니다.
-//			FInputModeGameAndUI InputModeData;
-//			PlayerController->SetInputMode(InputModeData);
-//		}
-//	}
-	APlayerController* NewPlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	if (World)
+	{
+		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(World, PlayerIndex);
+		if (PlayerController)
+		{
+			// 입력 모드를 재설정하여 게임과 UI 입력을 허용합니다.
+			FInputModeGameAndUI InputModeData;
+			PlayerController->SetInputMode(InputModeData);
+
+			// Pawn을 컨트롤러에 연결
+			PlayerController->Possess(this);
+		}
+	}
 }
 
 

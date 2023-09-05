@@ -1,6 +1,3 @@
-
-
-
 #include "PlayerCartMovement.h"
 
 // Sets default values for this component's properties
@@ -22,7 +19,6 @@ void UPlayerCartMovement::BeginPlay()
 	// ...
 
 }
-
 
 // Called every frame
 void UPlayerCartMovement::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

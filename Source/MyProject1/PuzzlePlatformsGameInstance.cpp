@@ -92,7 +92,17 @@ void UPuzzlePlatformsGameInstance::Host(FString ServerName)						// PlayerContro
 		else
 			CreateSession();
 	}
-}	
+}
+void UPuzzlePlatformsGameInstance::Join(uint32 Index)
+{
+	if (!SessionInterface.IsValid()) return;
+	if (!SessionSearch.IsValid()) return;
+	if (Menu != nullptr)
+	{
+		Menu->Teardown();
+	}
+	SessionInterface->JoinSession(0, SESSION_NAME, SessionSearch->SearchResults[Index]);
+}
 void UPuzzlePlatformsGameInstance::OnDestroySessionComplete(FName SessionName, bool succesess)
 {
 	if (succesess)
@@ -146,7 +156,7 @@ void UPuzzlePlatformsGameInstance::OnCreateSessionComplete(FName SessionName, bo
 	UWorld* World = GetWorld();
 	if (!ensure(World != nullptr)) return;
 
-	World->ServerTravel("/Game/Map/Lobby?listen");
+	World->ServerTravel("/Game/Map/KartMap?listen");
 }
 
 
@@ -161,6 +171,7 @@ void UPuzzlePlatformsGameInstance::Join(uint32 Index)
 	}
 	SessionInterface->JoinSession(0, SESSION_NAME, SessionSearch->SearchResults[Index]);
 }
+
 	
 void UPuzzlePlatformsGameInstance::StartSession()
 {

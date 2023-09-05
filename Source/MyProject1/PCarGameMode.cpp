@@ -10,17 +10,17 @@
 APCarGameMode::APCarGameMode()
 {
 
-	FInputModeGameOnly InputModedata;
-	DefaultPawnClass = APlayerKartPown::StaticClass(); 
-	UE_LOG(LogTemp, Warning, TEXT("StartCreate"));
+//	FInputModeGameOnly InputModedata;
+//	DefaultPawnClass = APlayerKartPown::StaticClass(); 
+//	UE_LOG(LogTemp, Warning, TEXT("StartCreate"));
 }
 
 void APCarGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
 
-	FInputModeGameOnly InputModedata;
-	NewPlayer->SetInputMode(InputModedata);
+//	FInputModeGameOnly InputModedata;
+//	NewPlayer->SetInputMode(InputModedata);
 
 }
 
