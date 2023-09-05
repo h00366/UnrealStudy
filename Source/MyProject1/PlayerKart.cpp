@@ -6,6 +6,9 @@
 #include "DrawDebugHelpers.h"
 #include "Net/UnrealNetwork.h"
 
+#include "Kismet/GameplayStatics.h"
+#include "PuzzlePlatformsGameInstance.h"
+
 
 // Sets default values
 APlayerKart::APlayerKart()
@@ -16,6 +19,18 @@ APlayerKart::APlayerKart()
 	SetReplicateMovement(false);
 	MovementComponent = CreateDefaultSubobject<UPlayerCartMovement>(TEXT("MovementComponent"));
 	MovementReplicator = CreateDefaultSubobject<UPlayerCartReplicator>(TEXT("MovementReplicator"));
+	UPuzzlePlatformsGameInstance* GameInstance = Cast<UPuzzlePlatformsGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if (GameInstance)
+	{
+		int32 PlayerIndex = GameInstance->PlayerIndex;
+		// 나머지 코드 실행
+		SetUp(PlayerIndex);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("ErrorErrorErrorErrorError."))
+	}
+	// 플레이어 인덱스를 SetUp 함수에 전달
 }
 
 // Called when the game starts or when spawned
@@ -57,18 +72,21 @@ void APlayerKart::Tick(float DeltaTime)
 	else
 		DrawDebugString(GetWorld(), FVector(0, 0, 200), TEXT("SimulatedProxy"), this, FColor::White, DeltaTime);
 
-	UWorld* World = GetWorld();
-	APlayerController* PlayerController = World->GetFirstPlayerController();
-	FInputModeGameOnly InputModedata;
-	PlayerController->SetInputMode(InputModedata);
 }
 
-void APlayerKart::SetUp()
+void APlayerKart::SetUp(int32 PlayerIndex)
 {
 	UWorld* World = GetWorld();
-	APlayerController* PlayerController = World->GetFirstPlayerController();
-	FInputModeGameOnly InputModedata;
-	PlayerController->SetInputMode(InputModedata);
+	if (World)
+	{	
+		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(World, PlayerIndex);
+		if (PlayerController)
+		{
+			// 입력 모드를 재설정하여 게임과 UI 입력을 허용합니다.
+			FInputModeGameAndUI InputModeData;
+			PlayerController->SetInputMode(InputModeData);
+		}
+	}
 }
 
 

@@ -25,7 +25,7 @@ public:
 	// Called every frame
 	 void Tick(float DeltaTime);
 	 
-	 void SetUp();
+	 void SetUp(int32 PlayerIndex);
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
