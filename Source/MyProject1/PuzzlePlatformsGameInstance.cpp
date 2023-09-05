@@ -93,16 +93,7 @@ void UPuzzlePlatformsGameInstance::Host(FString ServerName)						// PlayerContro
 			CreateSession();
 	}
 }
-void UPuzzlePlatformsGameInstance::Join(uint32 Index)
-{
-	if (!SessionInterface.IsValid()) return;
-	if (!SessionSearch.IsValid()) return;
-	if (Menu != nullptr)
-	{
-		Menu->Teardown();
-	}
-	SessionInterface->JoinSession(0, SESSION_NAME, SessionSearch->SearchResults[Index]);
-}
+
 void UPuzzlePlatformsGameInstance::OnDestroySessionComplete(FName SessionName, bool succesess)
 {
 	if (succesess)
