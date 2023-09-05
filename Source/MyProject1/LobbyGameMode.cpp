@@ -5,6 +5,11 @@
 #include "TimerManager.h"
 #include "PuzzlePlatformsGameInstance.h"
 
+ALobbyGameMode::ALobbyGameMode()
+{
+//	PostLogin(0);
+
+}
 void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	UE_LOG(LogTemp, Warning, TEXT("NumberOfPlayerTest"));
@@ -13,7 +18,7 @@ void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
 	auto GameInstence = Cast<UPuzzlePlatformsGameInstance>(GetGameInstance());
 	GameInstence->PlayerIndex = NumberOfPlayer;
 
-	if (NumberOfPlayer >= 2)
+	if (NumberOfPlayer >= 1)
 	{
   		GetWorldTimerManager().SetTimer(GameStartTimer,this, &ALobbyGameMode::StartGame,5);
 		UE_LOG(LogTemp,Warning ,TEXT("NumberOfPlayer = 3"));

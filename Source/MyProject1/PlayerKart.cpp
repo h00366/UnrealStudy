@@ -76,16 +76,17 @@ void APlayerKart::Tick(float DeltaTime)
 void APlayerKart::SetUp(int32 PlayerIndex)
 {
 	UWorld* World = GetWorld();
-	if (World)
-	{	
-		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(World, PlayerIndex);
-		if (PlayerController)
-		{
-			// 입력 모드를 재설정하여 게임과 UI 입력을 허용합니다.
-			FInputModeGameAndUI InputModeData;
-			PlayerController->SetInputMode(InputModeData);
-		}
-	}
+//	if (World)
+//	{	
+//		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(World, PlayerIndex);
+//		if (PlayerController)
+//		{
+//			// 입력 모드를 재설정하여 게임과 UI 입력을 허용합니다.
+//			FInputModeGameAndUI InputModeData;
+//			PlayerController->SetInputMode(InputModeData);
+//		}
+//	}
+	APlayerController* NewPlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 }
 
 
