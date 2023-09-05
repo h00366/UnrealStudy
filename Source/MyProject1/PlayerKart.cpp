@@ -19,17 +19,6 @@ APlayerKart::APlayerKart()
 	SetReplicateMovement(false);
 	MovementComponent = CreateDefaultSubobject<UPlayerCartMovement>(TEXT("MovementComponent"));
 	MovementReplicator = CreateDefaultSubobject<UPlayerCartReplicator>(TEXT("MovementReplicator"));
-	UPuzzlePlatformsGameInstance* GameInstance = Cast<UPuzzlePlatformsGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
-	if (GameInstance)
-	{
-		int32 PlayerIndex = GameInstance->PlayerIndex;
-		// 나머지 코드 실행
-		SetUp(PlayerIndex);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("ErrorErrorErrorErrorError."))
-	}
 	// 플레이어 인덱스를 SetUp 함수에 전달
 }
 
@@ -42,6 +31,16 @@ void APlayerKart::BeginPlay()
 	{
 		NetUpdateFrequency = 1;
 	}
+	UPuzzlePlatformsGameInstance* GameInstance = Cast<UPuzzlePlatformsGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if (GameInstance)
+	{
+		int32 PlayerIndex = GameInstance->PlayerIndex-1;
+		// 나머지 코드 실행
+		SetUp(0);
+		UE_LOG(LogTemp, Warning, TEXT("%d"), 0);
+	}
+	else
+		UE_LOG(LogTemp, Warning, TEXT("ErrorError"));
 }	
 
 FString GetEnumText(ENetRole Role)
