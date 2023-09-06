@@ -14,7 +14,7 @@ void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
 	auto GameInstence = Cast<UPuzzlePlatformsGameInstance>(GetGameInstance());
 	GameInstence->PlayerIndex = NumberOfPlayer;
 
-	if (NumberOfPlayer >= 1)
+	if (NumberOfPlayer >= 2)
 	{
   		GetWorldTimerManager().SetTimer(GameStartTimer,this, &ALobbyGameMode::StartGame,5);
 		UE_LOG(LogTemp,Warning ,TEXT("NumberOfPlayer = 3"));

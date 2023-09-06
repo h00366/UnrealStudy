@@ -149,10 +149,9 @@ void UPuzzlePlatformsGameInstance::OnCreateSessionComplete(FName SessionName, bo
 	UWorld* World = GetWorld();
 	if (!ensure(World != nullptr)) return;
 
-	APawn* Pawn = Cast<APawn>(this);
-
-	UGameplayStatics::OpenLevel(this, FName("/Game/Map/KartMap?listen"));
-//	World->ServerTravel("/Game/Map/KartMap?listen");
+	World->ServerTravel("/Game/Map/Lobby?listen");
+//	APawn* Pawn = Cast<APawn>(this);
+//	UGameplayStatics::OpenLevel(this, FName("/Game/Map/KartMap?listen"));
 
 }
 
