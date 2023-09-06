@@ -87,6 +87,7 @@ private:
 	UFUNCTION()
 		void OpenMainMenu();
 
+
 	UPROPERTY(meta = (BindWidget))
 		class UWidget* JoinManu;
 
@@ -98,6 +99,7 @@ private:
 
 	TOptional<uint32> selectedIndex;
 	void UpdateChildren();
+
 	
 };  
  

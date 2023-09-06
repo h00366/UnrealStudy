@@ -5,11 +5,6 @@
 #include "TimerManager.h"
 #include "PuzzlePlatformsGameInstance.h"
 
-ALobbyGameMode::ALobbyGameMode()
-{
-//	PostLogin(0);
-
-}
 
 void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
 {

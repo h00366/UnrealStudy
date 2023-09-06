@@ -25,15 +25,17 @@ void UPlayerCartMovement::TickComponent(float DeltaTime, ELevelTick TickType, FA
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (GetOwnerRole() == ROLE_AutonomousProxy || GetOwner()->GetRemoteRole() == ROLE_SimulatedProxy)
+//	if (GetOwnerRole() == ROLE_AutonomousProxy || GetOwner()->GetRemoteRole() == ROLE_SimulatedProxy)
 	{
 		LastMove = CreateMove(DeltaTime);
 		SimulateMove(LastMove);
+		UE_LOG(LogTemp, Warning, TEXT("Not LastMove.Throttle : %f"), LastMove.Throttle);
 	}
 }
 
 void UPlayerCartMovement::SimulateMove(const FGoKartMove& Move)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Test"));
 	FVector Force = GetOwner()->GetActorForwardVector() * MaxDrivingForce * Move.Throttle;
 
 	Force += GetAirResistance();
@@ -45,6 +47,9 @@ void UPlayerCartMovement::SimulateMove(const FGoKartMove& Move)
 
 	ApplyRotation(Move.DeltaTime, Move.SteeringThrow);
 
+	UE_LOG(LogTemp, Warning, TEXT("%d"), Move.SteeringThrow);
+	UE_LOG(LogTemp, Warning, TEXT("%d"), Move.Throttle);
+
 	UpdateLocationFromVelocity(Move.DeltaTime);
 }
 
@@ -55,6 +60,7 @@ FGoKartMove UPlayerCartMovement::CreateMove(float Delta)
 	Move.SteeringThrow = SteeringThrow;
 	Move.Throttle = Throttle;
 	Move.Time = GetWorld()->TimeSeconds;
+
 
 	return Move;
 }

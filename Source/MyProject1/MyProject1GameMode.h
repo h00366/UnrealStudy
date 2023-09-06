@@ -13,7 +13,7 @@ class AMyProject1GameMode : public AGameModeBase
 
 public:
 	AMyProject1GameMode();
+
+
+	APlayerController* GetPlayerController() const;
 };
-
-
-

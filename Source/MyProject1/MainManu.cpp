@@ -134,5 +134,4 @@ void UMainManu::OpenMainMenu()
 void UMainManu::OpenHoseMenu()
 {
 	ManuSwitcher->SetActiveWidget(HostMenu);
-
 }

@@ -8,6 +8,8 @@
 #include "Blueprint/UserWidget.h"
 #include "OnlineSessionSettings.h"
 #include "Interfaces/OnlineSessionInterface.h"
+#include "MyProject1GameMode.h"
+#include "Kismet/GameplayStatics.h"
 
 
 #include "PlatformTrigger.h"
@@ -44,7 +46,7 @@ void UPuzzlePlatformsGameInstance::Init()
 			SessionInterface = Subsystem->GetSessionInterface();
 			if (SessionInterface.IsValid()) {
 				SessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UPuzzlePlatformsGameInstance::OnCreateSessionComplete);
-				SessionInterface->OnDestroySessionCompleteDelegates.AddUObject(this, &UPuzzlePlatformsGameInstance::OnCreateSessionComplete);
+				SessionInterface->OnDestroySessionCompleteDelegates.AddUObject(this, &UPuzzlePlatformsGameInstance::OnDestroySessionComplete); // 여기서 수정
 				SessionInterface->OnFindSessionsCompleteDelegates.AddUObject(this, &UPuzzlePlatformsGameInstance::OnFindSessionsComplete);
 				SessionInterface->OnJoinSessionCompleteDelegates.AddUObject(this, &UPuzzlePlatformsGameInstance::OnJoinSessionComplete);
 			}
@@ -67,7 +69,6 @@ void UPuzzlePlatformsGameInstance::LoadMenu()
 
 	if (!ensure(Menu != nullptr)) return;
 
-
 	Menu->SetUp();
 	Menu->SetMenuInterface(this);
 }
@@ -81,7 +82,7 @@ void UPuzzlePlatformsGameInstance::InGameLoadMenu()
 	Menus->SetMenuInterface(this);
 }
 
-void UPuzzlePlatformsGameInstance::Host(FString ServerName)						// PlayerControllers, GameMode, Manager, Instances ����� ������
+void UPuzzlePlatformsGameInstance::Host(FString ServerName)	
 {
 	DesiredServerName = ServerName;
 	if (SessionInterface.IsValid())
@@ -92,13 +93,14 @@ void UPuzzlePlatformsGameInstance::Host(FString ServerName)						// PlayerContro
 		else
 			CreateSession();
 	}
+
 }
 
 void UPuzzlePlatformsGameInstance::OnDestroySessionComplete(FName SessionName, bool succesess)
 {
 	if (succesess)
 	{
-		CreateSession();
+		CreateSession(); // 여기서 CreateSession 함수를 호출하도록 수정
 	}
 }
 void UPuzzlePlatformsGameInstance::OnNetworkFailure(UWorld* World, UNetDriver* NetDriver, ENetworkFailure::Type FailureType, const FString& ErrorString)
@@ -147,7 +149,11 @@ void UPuzzlePlatformsGameInstance::OnCreateSessionComplete(FName SessionName, bo
 	UWorld* World = GetWorld();
 	if (!ensure(World != nullptr)) return;
 
-	World->ServerTravel("/Game/Map/KartMap?listen");
+	APawn* Pawn = Cast<APawn>(this);
+
+	UGameplayStatics::OpenLevel(this, FName("/Game/Map/KartMap?listen"));
+//	World->ServerTravel("/Game/Map/KartMap?listen");
+
 }
 
 
