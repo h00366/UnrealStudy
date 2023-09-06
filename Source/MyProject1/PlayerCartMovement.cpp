@@ -25,17 +25,23 @@ void UPlayerCartMovement::TickComponent(float DeltaTime, ELevelTick TickType, FA
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (GetOwnerRole() == ROLE_AutonomousProxy || GetOwner()->GetRemoteRole() == ROLE_SimulatedProxy || GetOwnerRole() == ROLE_Authority)
-	{
-		LastMove = CreateMove(DeltaTime);
-		SimulateMove(LastMove);
-		UE_LOG(LogTemp, Warning, TEXT("Not LastMove.Throttle : %f"), LastMove.Throttle);
-	}
-//	if (GetOwnerRole() == ROLE_AutonomousProxy || GetOwner()->GetRemoteRole() == ROLE_SimulatedProxy)
+//	if (GetOwnerRole() == ROLE_AutonomousProxy || GetOwner()->GetRemoteRole() == ROLE_SimulatedProxy || GetOwnerRole() == ROLE_Authority)
 //	{
 //		LastMove = CreateMove(DeltaTime);
 //		SimulateMove(LastMove);
 //		UE_LOG(LogTemp, Warning, TEXT("Not LastMove.Throttle : %f"), LastMove.Throttle);
+//	}
+
+	if (GetOwnerRole() == ROLE_AutonomousProxy || GetOwner()->GetRemoteRole() == ROLE_SimulatedProxy)
+	{
+		LastMove = CreateMove(DeltaTime);
+		SimulateMove(LastMove);
+	}
+
+//	if (GetOwnerRole() == ROLE_Authority)
+//	{
+//		LastMove = CreateMove(DeltaTime);
+//		SimulateMove(LastMove);
 //	}
 }
 
