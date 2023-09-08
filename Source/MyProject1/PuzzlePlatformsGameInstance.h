@@ -6,6 +6,7 @@
 #include "Engine/GameInstance.h"
 #include "OnlineSubsystem.h"
 #include "Interfaces/OnlineSessionInterface.h"
+#include "GameFramework/PlayerController.h"
 
 #include "MainMenuInterface.h"
 #include "PuzzlePlatformsGameInstance.generated.h"
@@ -32,6 +33,18 @@ public:
 
 		UFUNCTION(Exec)
 			void Join(uint32 Index) override;
+
+		UPROPERTY(BlueprintReadOnly, Category = "PlayerInfo")
+			int32 MaxPlayers = 4; // 최대 플레이어 수
+
+		UPROPERTY(BlueprintReadOnly, Category = "PlayerInfo")
+			TArray<int32> PlayerIndexes; // 각 플레이어의 고유 번호를 저장하는 배열
+
+		UFUNCTION(BlueprintCallable, Category = "PlayerInfo")
+			int32 GetPlayerIndex(APlayerController* PlayerController) const;
+
+		UFUNCTION(BlueprintCallable, Category = "PlayerInfo")
+			void RemovePlayerIndex(int32 PlayerIndex);
 
 		void StartSession();
 

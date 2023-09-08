@@ -28,7 +28,8 @@ void UPlayerCartMovement::TickComponent(float DeltaTime, ELevelTick TickType, FA
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (GetOwnerRole() == ROLE_AutonomousProxy || GetOwner()->GetRemoteRole() == ROLE_SimulatedProxy)
+//	if (GetOwnerRole() == ROLE_AutonomousProxy || GetOwner()->GetRemoteRole() == ROLE_SimulatedProxy)
+	if (PNumber == 0)
 	{
 		LastMove = CreateMove(DeltaTime);
 		SimulateMove(LastMove);
@@ -37,11 +38,11 @@ void UPlayerCartMovement::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	// 클라이언트에서 곱창남. 호스트면 움직이는 코드를 넣음.
 
 //	if (GetOwnerRole() == ROLE_Authority)
-//	if (PNumber == 0)
-//	{
-//		LastMove = CreateMove(DeltaTime);
-//		SimulateMove(LastMove);
-//	}
+	if (PNumber == 2)
+	{
+		LastMove = CreateMove(DeltaTime);
+		SimulateMove(LastMove);
+	}
 }
 
 void UPlayerCartMovement::SimulateMove(const FGoKartMove& Move)

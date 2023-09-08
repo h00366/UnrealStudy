@@ -22,7 +22,6 @@ APlayerKart::APlayerKart()
 
 }
 // Called when the game starts or when spawned
-
 void APlayerKart::BeginPlay()
 {
 	Super::BeginPlay();
@@ -31,30 +30,15 @@ void APlayerKart::BeginPlay()
 	{
 		NetUpdateFrequency = 1;
 	}
+
 	UPuzzlePlatformsGameInstance* GameInstance = Cast<UPuzzlePlatformsGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	if (GameInstance)
 	{
-		PlayerIndex = GameInstance->PlayerIndex;
+		PlayerIndex = GameInstance->GetPlayerIndex(Cast<APlayerController>(GetController()));
 		MovementComponent->SetPNumber(PlayerIndex);
 	}
 }
 
-FString GetEnumText(ENetRole Role)
-{
-	switch (Role)
-	{
-	case ROLE_None:
-		return "None";
-	case ROLE_SimulatedProxy:
-		return "SimulatedProxy";
-	case ROLE_AutonomousProxy:
-		return "AutonomousProxy";
-	case ROLE_Authority:
-		return "Authority";
-	default:
-		return "Error";
-	}
-}
 
 void APlayerKart::Tick(float DeltaTime)
 {

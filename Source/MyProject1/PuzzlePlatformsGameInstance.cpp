@@ -10,7 +10,7 @@
 #include "Interfaces/OnlineSessionInterface.h"
 #include "MyProject1GameMode.h"
 #include "Kismet/GameplayStatics.h"
-
+#include "GameFramework/PlayerState.h"
 
 #include "PlatformTrigger.h"
 #include "MainManu.h"
@@ -154,6 +154,13 @@ void UPuzzlePlatformsGameInstance::OnCreateSessionComplete(FName SessionName, bo
 }
 
 
+void UPuzzlePlatformsGameInstance::RemovePlayerIndex(int32 PlayerIndexs)
+{
+	if (PlayerIndex >= 0 && PlayerIndexs < PlayerIndexes.Num())
+	{
+		PlayerIndexes.RemoveAt(PlayerIndexs);
+	}
+}
 
 void UPuzzlePlatformsGameInstance::Join(uint32 Index)
 {
@@ -224,6 +231,20 @@ void UPuzzlePlatformsGameInstance::OnFindSessionsComplete(bool succesess)
 	}
 }
 
+int32 UPuzzlePlatformsGameInstance::GetPlayerIndex(APlayerController* PlayerController) const
+{
+	if (PlayerController)
+	{
+		// 플레이어 컨트롤러의 인덱스를 찾아 반환합니다.
+		int32 PlayerIndexs = PlayerIndexes.Find(PlayerController->PlayerState->PlayerId);
+		if (PlayerIndexs != INDEX_NONE)
+		{
+			return PlayerIndexs;
+		}
+	}
+
+	return -1; // 인덱스를 찾을 수 없으면 -1 반환
+}
 
 void UPuzzlePlatformsGameInstance::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
 {
