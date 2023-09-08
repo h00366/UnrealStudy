@@ -1,4 +1,7 @@
+
 #include "PlayerCartMovement.h"
+#include "Engine/EngineTypes.h"
+#include "Engine/Engine.h"  
 
 // Sets default values for this component's properties
 UPlayerCartMovement::UPlayerCartMovement()
@@ -25,20 +28,16 @@ void UPlayerCartMovement::TickComponent(float DeltaTime, ELevelTick TickType, FA
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-//	if (GetOwnerRole() == ROLE_AutonomousProxy || GetOwner()->GetRemoteRole() == ROLE_SimulatedProxy || GetOwnerRole() == ROLE_Authority)
-//	{
-//		LastMove = CreateMove(DeltaTime);
-//		SimulateMove(LastMove);
-//		UE_LOG(LogTemp, Warning, TEXT("Not LastMove.Throttle : %f"), LastMove.Throttle);
-//	}
-
 	if (GetOwnerRole() == ROLE_AutonomousProxy || GetOwner()->GetRemoteRole() == ROLE_SimulatedProxy)
 	{
 		LastMove = CreateMove(DeltaTime);
 		SimulateMove(LastMove);
 	}
 
+	// 클라이언트에서 곱창남. 호스트면 움직이는 코드를 넣음.
+
 //	if (GetOwnerRole() == ROLE_Authority)
+//	if (PNumber == 0)
 //	{
 //		LastMove = CreateMove(DeltaTime);
 //		SimulateMove(LastMove);
@@ -47,7 +46,6 @@ void UPlayerCartMovement::TickComponent(float DeltaTime, ELevelTick TickType, FA
 
 void UPlayerCartMovement::SimulateMove(const FGoKartMove& Move)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Test"));
 	FVector Force = GetOwner()->GetActorForwardVector() * MaxDrivingForce * Move.Throttle;
 
 	Force += GetAirResistance();
@@ -59,8 +57,6 @@ void UPlayerCartMovement::SimulateMove(const FGoKartMove& Move)
 
 	ApplyRotation(Move.DeltaTime, Move.SteeringThrow);
 
-	UE_LOG(LogTemp, Warning, TEXT("%d"), Move.SteeringThrow);
-	UE_LOG(LogTemp, Warning, TEXT("%d"), Move.Throttle);
 
 	UpdateLocationFromVelocity(Move.DeltaTime);
 }

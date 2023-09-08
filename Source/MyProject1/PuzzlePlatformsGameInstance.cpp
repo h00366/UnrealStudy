@@ -119,7 +119,7 @@ void UPuzzlePlatformsGameInstance::CreateSession()
 		else
 		{
 			SessionSettings.bIsLANMatch = false;
-		}
+		}	
 		SessionSettings.NumPublicConnections = 5;
 		SessionSettings.bShouldAdvertise = true;
 		SessionSettings.bUsesPresence = true;
@@ -150,8 +150,6 @@ void UPuzzlePlatformsGameInstance::OnCreateSessionComplete(FName SessionName, bo
 	if (!ensure(World != nullptr)) return;
 
 	World->ServerTravel("/Game/Map/Lobby?listen");
-//	APawn* Pawn = Cast<APawn>(this);
-//	UGameplayStatics::OpenLevel(this, FName("/Game/Map/KartMap?listen"));
 
 }
 

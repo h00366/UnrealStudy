@@ -33,6 +33,7 @@ public:
 		UPlayerCartMovement* MovementComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		UPlayerCartReplicator* MovementReplicator;
+	int32 PlayerIndex;
 
 private:
 
@@ -40,5 +41,6 @@ private:
 	void MoveRight(float Value);
 
 	void MyActionPressed();
+	void SetSessionNumber(uint32 NewSessionNumber);
 
 };

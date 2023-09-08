@@ -31,8 +31,13 @@ void APlayerKart::BeginPlay()
 	{
 		NetUpdateFrequency = 1;
 	}
-
-}	
+	UPuzzlePlatformsGameInstance* GameInstance = Cast<UPuzzlePlatformsGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if (GameInstance)
+	{
+		PlayerIndex = GameInstance->PlayerIndex;
+		MovementComponent->SetPNumber(PlayerIndex);
+	}
+}
 
 FString GetEnumText(ENetRole Role)
 {
@@ -56,14 +61,27 @@ void APlayerKart::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	ENetRole Roles = GetLocalRole();
+	FString PlayerIndexString = FString::Printf(TEXT("%u"), PlayerIndex);
 	if (Roles == ROLE_Authority)
+	{
 		DrawDebugString(GetWorld(), FVector(0, 0, 200), TEXT("Authority"), this, FColor::White, DeltaTime);
+		DrawDebugString(GetWorld(), FVector(0, 0, 300), PlayerIndexString, this, FColor::White, DeltaTime);
+	} 
 	else if (Roles == ROLE_AutonomousProxy)
+	{
 		DrawDebugString(GetWorld(), FVector(0, 0, 200), TEXT("AutonomousProxy"), this, FColor::White, DeltaTime);
+		DrawDebugString(GetWorld(), FVector(0, 0, 300), PlayerIndexString, this, FColor::White, DeltaTime);
+	}
 	else if (Roles == ROLE_SimulatedProxy)
+	{
 		DrawDebugString(GetWorld(), FVector(0, 0, 200), TEXT("SimulatedProxy"), this, FColor::White, DeltaTime);
+		DrawDebugString(GetWorld(), FVector(0, 0, 300), PlayerIndexString, this, FColor::White, DeltaTime);
+	}
 	else
+	{
 		DrawDebugString(GetWorld(), FVector(0, 0, 200), TEXT("ErrorErrorError"), this, FColor::White, DeltaTime);
+		DrawDebugString(GetWorld(), FVector(0, 0, 300), PlayerIndexString, this, FColor::White, DeltaTime);
+	}
 }
 
 void APlayerKart::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

@@ -49,6 +49,7 @@ public:
 
 	void SetThrottle(float Val) { Throttle = Val; };
 	void SetSteeringThrow(float Val) { SteeringThrow = Val; };
+	void SetPNumber(uint32 Val) { PNumber = Val; };
 
 	FGoKartMove GetLastMove() { return LastMove; };
 
@@ -86,6 +87,7 @@ private:
 
 	float Throttle;
 	float SteeringThrow;
+	uint32 PNumber;
 
 	FGoKartMove LastMove;
 };
