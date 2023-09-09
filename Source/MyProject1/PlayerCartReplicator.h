@@ -1,6 +1,7 @@
 
 #pragma once
 
+#include "GameFramework/Controller.h"
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "PlayerCartMovement.h"

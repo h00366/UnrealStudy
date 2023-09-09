@@ -28,13 +28,34 @@ void UPlayerCartMovement::TickComponent(float DeltaTime, ELevelTick TickType, FA
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (GetOwnerRole() == ROLE_AutonomousProxy || GetOwner()->GetRemoteRole() == ROLE_SimulatedProxy)
+	if  (GetOwnerRole() == ROLE_AutonomousProxy || GetOwner()->GetRemoteRole() == ROLE_SimulatedProxy)
 	{
 		LastMove = CreateMove(DeltaTime);
 		SimulateMove(LastMove);
 	}
 
+	//	if (GetOwner()->HasAuthority())
+		if(GetOwner()->GetRemoteRole() == ROLE_Authority || GetOwner()->GetRemoteRole() == ROLE_AutonomousProxy)
+	{
+		LastMove = CreateMove(DeltaTime);
+		SimulateMove(LastMove);
+	}
+
+
+//	if (GetOwner()->GetRemoteRole() == ROLE_SimulatedProxy)
+//	{
+//		UE_LOG(LogTemp, Warning, TEXT("ROLE_SimulatedProxy"));
+//	}
+//	else if (GetOwner()->GetRemoteRole() == ROLE_AutonomousProxy)
+//	{
+//		UE_LOG(LogTemp, Warning, TEXT("ROLE_AutonomousProxy"));
+//	}
+//	else if (GetOwner()->GetRemoteRole() == ROLE_Authority)
+//	{
+//		UE_LOG(LogTemp, Warning, TEXT("ROLE_Authority"));
+//	}
 }
+
 
 void UPlayerCartMovement::SimulateMove(const FGoKartMove& Move)
 {

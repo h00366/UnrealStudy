@@ -1,7 +1,11 @@
 
 #include "PlayerCartReplicator.h"
+
+#include "Components/InputComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "GameFramework/Actor.h"
+#include "PuzzlePlatformsGameInstance.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
 UPlayerCartReplicator::UPlayerCartReplicator()
@@ -38,21 +42,20 @@ void UPlayerCartReplicator::TickComponent(float DeltaTime, ELevelTick TickType, 
 	{
 		UnacknowledgedMoves.Add(LastMove);
 		Server_SendMove(LastMove);
-		UE_LOG(LogTemp, Error, TEXT("Client 실행중"));
-
+//		UE_LOG(LogTemp, Error, TEXT("Client 실행중"));
 	}
 
-	// We are the server and in control of the pawn.
-	if (GetOwner()->GetRemoteRole() == ROLE_SimulatedProxy)			// server
+	if (GetOwner()->GetRemoteRole() == ROLE_SimulatedProxy)			// server, 리플레이 구현
 	{
 		UpdateServerState(LastMove);
-		UE_LOG(LogTemp, Error, TEXT("Server 실행중"));
+//		UE_LOG(LogTemp, Error, TEXT("Server 실행중"));
 	}
 
-	if (GetOwnerRole() == ROLE_SimulatedProxy)
+	if (GetOwnerRole() == ROLE_SimulatedProxy)						// 1초에 한번씩 로딩.
 	{
 		ClientTick(DeltaTime);
-	}// ...
+//		UE_LOG(LogTemp, Error, TEXT("ROLE_SimulatedProxy 실행중"));
+	}
 }
 
 void UPlayerCartReplicator::UpdateServerState(const FGoKartMove& Move)
