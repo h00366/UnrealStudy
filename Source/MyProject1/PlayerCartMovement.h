@@ -43,6 +43,7 @@ public:
 	 void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction);
 
 	void SimulateMove(const FGoKartMove& Move);
+	void ServerSimulateMove(const FGoKartMove& Move);
 
 	FVector GetVelocity() { return Velocity; };
 	void SetVelocity(FVector Val) { Velocity = Val; };

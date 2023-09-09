@@ -30,13 +30,17 @@ void APlayerKart::BeginPlay()
 	{
 		NetUpdateFrequency = 1;
 	}
+	else
+	{
+
+	}
 
 	UPuzzlePlatformsGameInstance* GameInstance = Cast<UPuzzlePlatformsGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	if (GameInstance)
 	{
 		PlayerIndex = GameInstance->GetPlayerIndex(Cast<APlayerController>(GetController()));
 		MovementComponent->SetPNumber(PlayerIndex);
-	}
+	}	
 }
 
 
@@ -71,7 +75,7 @@ void APlayerKart::Tick(float DeltaTime)
 void APlayerKart::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	
+
 	ENetRole Roles = GetLocalRole();
 	if (Roles == ROLE_Authority)
 	{
@@ -90,9 +94,19 @@ void APlayerKart::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		UE_LOG(LogTemp, Warning, TEXT("return"));
 		return;
 	}
-	PlayerInputComponent->BindAxis("MoveForward", this, &APlayerKart::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &APlayerKart::MoveRight);
+	if (HasAuthority())
+	{
+		PlayerInputComponent->BindAxis("MoveForward", this, &APlayerKart::MoveForward);
+		PlayerInputComponent->BindAxis("MoveRight", this, &APlayerKart::MoveRight);
+	}
+	else
+	{
+		PlayerInputComponent->BindAxis("MoveForward", this, &APlayerKart::MoveForward);
+		PlayerInputComponent->BindAxis("MoveRight", this, &APlayerKart::MoveRight);
+	}
+
 }
+
 
 void APlayerKart::MoveForward(float Value)
 {

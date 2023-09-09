@@ -28,21 +28,12 @@ void UPlayerCartMovement::TickComponent(float DeltaTime, ELevelTick TickType, FA
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-//	if (GetOwnerRole() == ROLE_AutonomousProxy || GetOwner()->GetRemoteRole() == ROLE_SimulatedProxy)
-	if (PNumber == 0)
+	if (GetOwnerRole() == ROLE_AutonomousProxy || GetOwner()->GetRemoteRole() == ROLE_SimulatedProxy)
 	{
 		LastMove = CreateMove(DeltaTime);
 		SimulateMove(LastMove);
 	}
 
-	// 클라이언트에서 곱창남. 호스트면 움직이는 코드를 넣음.
-
-//	if (GetOwnerRole() == ROLE_Authority)
-	if (PNumber == 2)
-	{
-		LastMove = CreateMove(DeltaTime);
-		SimulateMove(LastMove);
-	}
 }
 
 void UPlayerCartMovement::SimulateMove(const FGoKartMove& Move)
@@ -58,6 +49,22 @@ void UPlayerCartMovement::SimulateMove(const FGoKartMove& Move)
 
 	ApplyRotation(Move.DeltaTime, Move.SteeringThrow);
 
+
+	UpdateLocationFromVelocity(Move.DeltaTime);
+}
+
+void UPlayerCartMovement::ServerSimulateMove(const FGoKartMove& Move)
+{
+	FVector Force = GetOwner()->GetActorForwardVector() * MaxDrivingForce * Move.Throttle;
+
+	Force += GetAirResistance();
+	Force += GetRollingResistance();
+
+	FVector Acceleration = Force / Mass;
+
+	Velocity = Velocity + Acceleration * Move.DeltaTime;
+
+	ApplyRotation(Move.DeltaTime, Move.SteeringThrow);
 
 	UpdateLocationFromVelocity(Move.DeltaTime);
 }

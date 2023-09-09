@@ -22,7 +22,6 @@ void UPlayerCartReplicator::BeginPlay()
 
 	MovementComponent = GetOwner()->FindComponentByClass<UPlayerCartMovement>();
 	// ...
-
 }
 
 
@@ -35,16 +34,19 @@ void UPlayerCartReplicator::TickComponent(float DeltaTime, ELevelTick TickType, 
 
 	FGoKartMove LastMove = MovementComponent->GetLastMove();
 
-	if (GetOwnerRole() == ROLE_AutonomousProxy)
+	if (GetOwnerRole() == ROLE_AutonomousProxy)						// Client
 	{
 		UnacknowledgedMoves.Add(LastMove);
 		Server_SendMove(LastMove);
+		UE_LOG(LogTemp, Error, TEXT("Client 실행중"));
+
 	}
 
 	// We are the server and in control of the pawn.
-	if (GetOwner()->GetRemoteRole() == ROLE_SimulatedProxy)
+	if (GetOwner()->GetRemoteRole() == ROLE_SimulatedProxy)			// server
 	{
 		UpdateServerState(LastMove);
+		UE_LOG(LogTemp, Error, TEXT("Server 실행중"));
 	}
 
 	if (GetOwnerRole() == ROLE_SimulatedProxy)
