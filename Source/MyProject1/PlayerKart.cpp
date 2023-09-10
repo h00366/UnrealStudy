@@ -63,6 +63,17 @@ void APlayerKart::Tick(float DeltaTime)
 	{
 		DrawDebugString(GetWorld(), FVector(0, 0, 200), TEXT("ErrorErrorError"), this, FColor::White, DeltaTime);
 	}
+
+
+	if (GetOwner()->GetRemoteRole() == ROLE_SimulatedProxy)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ROLE_SimulatedProxy"));
+	}
+	else if (GetOwner()->GetRemoteRole() == ROLE_AutonomousProxy)
+	{
+		GetOwner()->GetRemoteRole();
+		UE_LOG(LogTemp, Warning, TEXT("ROLE_AutonomousProxy"));
+	}
 }
 
 void APlayerKart::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
