@@ -26,7 +26,7 @@ void ALobbyGameMode::PostLogin(APlayerController* NewPlayer)
 
     if (GameInstance && GameInstance->PlayerIndexes.Num() >= 1)
     {
-        GetWorldTimerManager().SetTimer(GameStartTimer, this, &ALobbyGameMode::StartGame, 5);
+        GetWorldTimerManager().SetTimer(GameStartTimer, this, &ALobbyGameMode::StartGame, 15);
         UE_LOG(LogTemp, Warning, TEXT("NumberOfPlayer >= 2"));
     }
 }

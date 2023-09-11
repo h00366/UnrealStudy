@@ -33,6 +33,7 @@ void UPlayerCartMovement::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	{
 		LastMove = CreateMove(DeltaTime);
 		SimulateMove(LastMove);
+
 	}
 
 	//		if (GetOwner()->HasAuthority())
@@ -44,18 +45,18 @@ void UPlayerCartMovement::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	//
 	//
 
-//	if (GetOwner()->GetRemoteRole() == ROLE_SimulatedProxy)
-//	{
-//		UE_LOG(LogTemp, Warning, TEXT("ROLE_SimulatedProxy"));
-//	}
-//	else if (GetOwner()->GetRemoteRole() == ROLE_AutonomousProxy)
-//	{
-//		UE_LOG(LogTemp, Warning, TEXT("ROLE_AutonomousProxy"));
-//	}
-//	else if (GetOwner()->GetRemoteRole() == ROLE_Authority)
-//	{
-//		UE_LOG(LogTemp, Warning, TEXT("ROLE_Authority"));
-//	}
+	if (GetOwner()->GetRemoteRole() == ROLE_SimulatedProxy)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("MoveMentROLE_SimulatedProxy"));
+	}
+	else if (GetOwner()->GetRemoteRole() == ROLE_AutonomousProxy)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("MoveMentROLE_AutonomousProxy"));
+	}
+	else if (GetOwner()->GetRemoteRole() == ROLE_Authority)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("MoveMentROLE_Authority"));
+	}
 //
 //	if (GetOwnerRole() == ROLE_SimulatedProxy)
 //	{

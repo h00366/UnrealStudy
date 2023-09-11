@@ -65,15 +65,18 @@ void APlayerKart::Tick(float DeltaTime)
 	}
 
 
-	if (GetOwner()->GetRemoteRole() == ROLE_SimulatedProxy)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("ROLE_SimulatedProxy"));
-	}
-	else if (GetOwner()->GetRemoteRole() == ROLE_AutonomousProxy)
-	{
-		GetOwner()->GetRemoteRole();
-		UE_LOG(LogTemp, Warning, TEXT("ROLE_AutonomousProxy"));
-	}
+//	if (GetOwner()->GetRemoteRole() == ROLE_SimulatedProxy)
+//	{
+//		UE_LOG(LogTemp, Warning, TEXT("ROLE_SimulatedProxy"));
+//	}
+//	else if (GetOwner()->GetRemoteRole() == ROLE_AutonomousProxy)
+//	{
+//		UE_LOG(LogTemp, Warning, TEXT("ROLE_AutonomousProxy"));
+//	}
+//	else if (GetOwner()->GetRemoteRole() == ROLE_Authority)
+//	{
+//		UE_LOG(LogTemp, Warning, TEXT("ROLE_Authority"));
+//	}
 }
 
 void APlayerKart::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
