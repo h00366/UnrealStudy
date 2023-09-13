@@ -45,24 +45,25 @@ void APlayerKart::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	ENetRole Roles = GetLocalRole();
+
 //	FString PlayerIndexString = FString::Printf(TEXT("%u"), PlayerIndex);
 
-	if (Roles == ROLE_Authority)
-	{
-		DrawDebugString(GetWorld(), FVector(0, 0, 200), TEXT("Authority"), this, FColor::White, DeltaTime);
-	} 
-	else if (Roles == ROLE_AutonomousProxy)
-	{
-		DrawDebugString(GetWorld(), FVector(0, 0, 200), TEXT("AutonomousProxy"), this, FColor::White, DeltaTime);
-	}
-	else if (Roles == ROLE_SimulatedProxy)
-	{
-		DrawDebugString(GetWorld(), FVector(0, 0, 200), TEXT("SimulatedProxy"), this, FColor::White, DeltaTime);
-	}
-	else
-	{
-		DrawDebugString(GetWorld(), FVector(0, 0, 200), TEXT("ErrorErrorError"), this, FColor::White, DeltaTime);
-	}
+//	if (Roles == ROLE_Authority)
+//	{
+//		DrawDebugString(GetWorld(), FVector(0, 0, 200), TEXT("Authority"), this, FColor::White, DeltaTime);
+//	} 
+//	else if (Roles == ROLE_AutonomousProxy)
+//	{
+//		DrawDebugString(GetWorld(), FVector(0, 0, 200), TEXT("AutonomousProxy"), this, FColor::White, DeltaTime);
+//	}
+//	else if (Roles == ROLE_SimulatedProxy)
+//	{
+//		DrawDebugString(GetWorld(), FVector(0, 0, 200), TEXT("SimulatedProxy"), this, FColor::White, DeltaTime);
+//	}
+//	else
+//	{
+//		DrawDebugString(GetWorld(), FVector(0, 0, 200), TEXT("ErrorErrorError"), this, FColor::White, DeltaTime);
+//	}
 
 
 //	if (GetOwner()->GetRemoteRole() == ROLE_SimulatedProxy)
@@ -102,9 +103,16 @@ void APlayerKart::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		UE_LOG(LogTemp, Warning, TEXT("return"));
 		return;
 	}
-
-	PlayerInputComponent->BindAxis("MoveForward", this, &APlayerKart::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &APlayerKart::MoveRight);
+//	if (HasAuthority())
+//	{
+//		PlayerInputComponent->BindAxis("MoveForward", this, &APlayerKart::MoveForward);
+//		PlayerInputComponent->BindAxis("MoveRight", this, &APlayerKart::MoveRight);
+//	}
+//	else
+	{
+		PlayerInputComponent->BindAxis("MoveForward", this, &APlayerKart::MoveForward);
+		PlayerInputComponent->BindAxis("MoveRight", this, &APlayerKart::MoveRight);
+	}
 }
 
 
